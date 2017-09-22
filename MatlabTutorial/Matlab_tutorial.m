@@ -44,7 +44,8 @@ A
 
 A = [1 2; 3 4];              % Creates a 2x2 matrix
 B = [1,2; 3,4];              % The simplest way to create a matrix is
-                             % to list its entries in square brackets.
+                             % to list its entries in 
+                             square brackets.
                              % The ";" symbol separates rows;
                              % the (optional) "," separates columns.
 
