@@ -1,23 +1,38 @@
 function [ imd ] = texture_synthesis( tex, imd_size, patch_size )
-    imd = zeros(imd_size(1), imd_size(2), 3);
-    mask = zeros(imd_size(1), imd_size(2));
-    
-    % Fill the seed & the mask
-    seed_size = 3;
-    tex_x = randi(size(tex,1) - patch_size + 1, 1);
-    tex_y = randi(size(tex,2) - patch_size + 1, 1);
-    imd_x = floor((imd_size(1) - seed_size)/2);
-    imd_y = floor((imd_size(2) - seed_size)/2);
-    imd(imd_x:imd_x+seed_size-1, imd_y:imd_y+seed_size-1, :) = tex(tex_x:tex_x+seed_size-1, tex_y:tex_y+seed_size-1, :);
-    mask(imd_x:imd_x+seed_size-1, imd_y:imd_y+seed_size-1) = ones(seed_size, seed_size);
-    
-    figure;
-    imagesc(imd);
-    figure;
-    imagesc(mask);
-    
-    mask_dilation = dilation(mask);
-    pixel_queue = mask_dilation - mask
-    
-end
 
+    % Initialisation imd/mask/patch_hs
+    imd  = zeros(imd_size(1), imd_size(2), 3);
+    mask = zeros(size(imd,1), size(imd,2));
+    patch_hs = floor(patch_size / 2);
+
+    % Fill the seed & the mask
+    [imd, mask] = fill_seed(tex, patch_size, imd, mask);
+    
+    figure; imagesc(imd);
+    figure; imagesc(mask);
+    
+    
+    while(size(find(mask(:,:) == 0), 1) != 0) 
+      % Find out unfilled pixels
+      pixel_queue = find_unfilled_pixels(mask);
+      
+      for pixel = size(pixel_queue, 1)
+        % On rajoute des 0 autour de imd/tex pour gérer les bords
+        pad_imd  = padarray(imd, [patch_hs,patch_hs]);
+        pad_mask = padarray(mask, [patch_hs,patch_hs]);
+        pad_tex  = padarray(tex, [patch_hs,patch_hs]); 
+        
+        pixel += patch_hs;
+        
+        best_pixel = find_best_pixel(pad_imd(pixel(1,1)-patch_hs:pixel(1,1)+patch_sh), 
+                                     pad_mask(pixel(1,1)-patch_hs:pixel(1,1)+patch_sh),
+                                     pad_tex);
+        
+        pixel -= patch_hs;
+
+        imd(pixel_queue(pixel,1),pixel_queue(pixel,2)) = tex(best_pixel(1,1),best_pixel(1,2));
+      end
+      
+      break; % delete break
+    end
+end
