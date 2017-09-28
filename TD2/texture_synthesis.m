@@ -16,7 +16,8 @@ function [ imd ] = texture_synthesis( tex, imd_size, patch_size )
     figure;
     imagesc(mask);
     
-    %mask = dilatation(mask);
-
+    mask_dilation = dilation(mask);
+    pixel_queue = mask_dilation - mask
+    
 end
 
