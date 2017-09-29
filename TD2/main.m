@@ -1,4 +1,4 @@
-pkg load image
+%pkg load image
 
 tex = imread('text1.jpg');
 tex = im2double(tex);
