@@ -1,7 +1,7 @@
 function [ imd ] = in_painting( target, mask, patch_size )
     
-    imd = target;
-    figure;
+    imd = target; 
+    figure; imagesc(imd);
 
     % On rajoute des 0 autour de imd/tex/mask pour gérer les bords
     patch_hs = floor(patch_size / 2);
