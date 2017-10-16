@@ -34,9 +34,8 @@ function [ imgC ] = patchMatching( nb_iter, patch_hs, filenameA, filenameB, file
     imagesc(imgC);
     title('imgC');
 
-    figure;
     for iter=1:nb_iter
-      iter
+      fprintf('iter = %d\n', iter);
       
       if (mod(iter,2) == 1)
          di = -1;
@@ -68,42 +67,41 @@ function [ imgC ] = patchMatching( nb_iter, patch_hs, filenameA, filenameB, file
               if (i1+di >= 1 && i1+di <= size(imgC,1))
                   i2 = coor(i1+di,j1,1)-di;
                   j2 = coor(i1+di,j1,2);
-                  if(i2 < 1 || i2 > size(imgB,1)) 
-                    continue;
-                  end
                   
-                  patch_imgB = pad_imgB(i2:i2+patch_size-1, j2:j2+patch_size-1,:);
-                  ssd2 = computeSSD(patch_imgA, patch_imgB);
-                  if (ssd2 < ssd) 
-                     best_i = i2;
-                     best_j = j2;
-                     ssd = ssd2;
+                  if(i2 > 0 && i2 <= size(imgB,1)) 
+                      patch_imgB = pad_imgB(i2:i2+patch_size-1, j2:j2+patch_size-1,:);
+                      ssd2 = computeSSD(patch_imgA, patch_imgB);
+                      if (ssd2 < ssd) 
+                         best_i = i2;
+                         best_j = j2;
+                         ssd = ssd2;
+                      end
                   end
               end
               
               if (j1+dj >= 1 && j1+dj <= size(imgC,2))
                   i2 = coor(i1,j1+dj,1);
                   j2 = coor(i1,j1+dj,2)-dj;
-                  if(i2 < 1 || i2 > size(imgB,2)) 
-                    continue;
-                  end
                   
-                  patch_imgB = pad_imgB(i2:i2+patch_size-1, j2:j2+patch_size-1,:);
-                  ssd2 = computeSSD(patch_imgA, patch_imgB);
-                  if (ssd2 < ssd) 
-                     best_i = i2;
-                     best_j = j2;
-                     ssd = ssd2;
+                  if(j2 > 0 && j2 <= size(imgB,2))
+                      patch_imgB = pad_imgB(i2:i2+patch_size-1, j2:j2+patch_size-1,:);
+                      ssd2 = computeSSD(patch_imgA, patch_imgB);
+                      if (ssd2 < ssd) 
+                         best_i = i2;
+                         best_j = j2;
+                         ssd = ssd2;
+                      end
                   end
               end
               
               imgC(i1,j1,:) = imgB(best_i, best_j,:);
               coor(i1,j1,:) = [best_i,best_j];
           end
+          
           imagesc(imgC);
           drawnow;
       end
-      filenameIter = strcat("iter", int2str(iter), ".png");
+      filenameIter = strcat('iter', int2str(iter), '.png');
       imwrite (imgC, filenameIter);
     end
     
