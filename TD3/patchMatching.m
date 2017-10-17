@@ -10,8 +10,8 @@ function [ imgC ] = patchMatching( nb_iter, patch_hs, filenameA, filenameB, file
     patch_size = patch_hs * 2 + 1;
     coor = zeros(size(imgC,1),size(imgC,2),2);
 
-    pad_imgA  = padarray(imgA,  [patch_hs, patch_hs]);
-    pad_imgB = padarray(imgB, [patch_hs, patch_hs]);
+    pad_imgA  = padarray(imgA,  [patch_hs, patch_hs], -1);
+    pad_imgB = padarray(imgB, [patch_hs, patch_hs], -1);
 
     % Initialisation de C avec des pixels aléatoires de B
     for i=1:size(imgC,1)
@@ -38,11 +38,9 @@ function [ imgC ] = patchMatching( nb_iter, patch_hs, filenameA, filenameB, file
       fprintf('iter = %d\n', iter);
       
       if (mod(iter,2) == 1)
-         di = -1;
-         dj = -1;
+         offset = -1;
       else
-         di = 1;
-         dj = 1;
+         offset = 1;
       end
       
       for i=1:size(imgC,1)
@@ -60,17 +58,20 @@ function [ imgC ] = patchMatching( nb_iter, patch_hs, filenameA, filenameB, file
               patch_imgA = pad_imgA(i1:i1+patch_size-1, j1:j1+patch_size-1,:);
               patch_imgB = pad_imgB(i2:i2+patch_size-1, j2:j2+patch_size-1,:);
               
+              mask = ones(patch_size, patch_size, 3);
+              mask(find(patch_imgA < 0)) = 0;
+              
               best_i = i2;
               best_j = j2;
               
-              ssd = computeSSD(patch_imgA, patch_imgB);
-              if (i1+di >= 1 && i1+di <= size(imgC,1))
-                  i2 = coor(i1+di,j1,1)-di;
-                  j2 = coor(i1+di,j1,2);
+              ssd = computeSSD(patch_imgA, patch_imgB, mask);
+              if (i1+offset >= 1 && i1+offset <= size(imgC,1))
+                  i2 = coor(i1+offset,j1,1)-offset;
+                  j2 = coor(i1+offset,j1,2);
                   
                   if(i2 > 0 && i2 <= size(imgB,1)) 
                       patch_imgB = pad_imgB(i2:i2+patch_size-1, j2:j2+patch_size-1,:);
-                      ssd2 = computeSSD(patch_imgA, patch_imgB);
+                      ssd2 = computeSSD(patch_imgA, patch_imgB, mask);
                       if (ssd2 < ssd) 
                          best_i = i2;
                          best_j = j2;
@@ -79,13 +80,13 @@ function [ imgC ] = patchMatching( nb_iter, patch_hs, filenameA, filenameB, file
                   end
               end
               
-              if (j1+dj >= 1 && j1+dj <= size(imgC,2))
-                  i2 = coor(i1,j1+dj,1);
-                  j2 = coor(i1,j1+dj,2)-dj;
+              if (j1+offset >= 1 && j1+offset <= size(imgC,2))
+                  i2 = coor(i1,j1+offset,1);
+                  j2 = coor(i1,j1+offset,2)-offset;
                   
                   if(j2 > 0 && j2 <= size(imgB,2))
                       patch_imgB = pad_imgB(i2:i2+patch_size-1, j2:j2+patch_size-1,:);
-                      ssd2 = computeSSD(patch_imgA, patch_imgB);
+                      ssd2 = computeSSD(patch_imgA, patch_imgB, mask);
                       if (ssd2 < ssd) 
                          best_i = i2;
                          best_j = j2;
