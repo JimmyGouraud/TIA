@@ -100,9 +100,10 @@ function [ imgC ] = patchMatching( nb_iter, patch_hs, filenameA, filenameB, file
           end
           
           imagesc(imgC);
+          title('imgC');
           drawnow;
       end
-      filenameIter = strcat('iter', int2str(iter), '.png');
+      filenameIter = strcat(filenameC(1:size(filenameC, 2) - 5), '_hs', int2str(patch_hs), '_iter', int2str(iter), '.png');
       imwrite (imgC, filenameIter);
     end
     
