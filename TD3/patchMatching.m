@@ -8,7 +8,7 @@ function [ imgC ] = patchMatching( nb_iter, patch_hs, filenameA, filenameB, file
     imgC = zeros(size(imgA, 1), size(imgA, 2), 3);
           
     patch_size = patch_hs * 2 + 1;
-    coor = zeros(size(imgC,1),size(imgC,2),2);
+    NNF = zeros(size(imgC,1),size(imgC,2),2);
 
     pad_imgA  = padarray(imgA,  [patch_hs, patch_hs], -1);
     pad_imgB = padarray(imgB, [patch_hs, patch_hs], -1);
@@ -19,7 +19,7 @@ function [ imgC ] = patchMatching( nb_iter, patch_hs, filenameA, filenameB, file
             i2 = randi(size(imgC,1)-patch_size)+patch_hs;
             j2 = randi(size(imgC,2)-patch_size)+patch_hs;
             imgC(i,j,:) = imgB(i2,j2,:);
-            coor(i,j,:) = [i2,j2];
+            NNF(i,j,:) = [i2,j2];
         end
     end
 
@@ -53,8 +53,8 @@ function [ imgC ] = patchMatching( nb_iter, patch_hs, filenameA, filenameB, file
                   j1 = size(imgC,2)-j+1;
               end
               
-              i2 = coor(i1,j1,1);
-              j2 = coor(i1,j1,2);
+              i2 = NNF(i1,j1,1);
+              j2 = NNF(i1,j1,2);
               patch_imgA = pad_imgA(i1:i1+patch_size-1, j1:j1+patch_size-1,:);
               patch_imgB = pad_imgB(i2:i2+patch_size-1, j2:j2+patch_size-1,:);
               
@@ -66,8 +66,8 @@ function [ imgC ] = patchMatching( nb_iter, patch_hs, filenameA, filenameB, file
               
               ssd = computeSSD(patch_imgA, patch_imgB, mask);
               if (i1+offset >= 1 && i1+offset <= size(imgC,1))
-                  i2 = coor(i1+offset,j1,1)-offset;
-                  j2 = coor(i1+offset,j1,2);
+                  i2 = NNF(i1+offset,j1,1)-offset;
+                  j2 = NNF(i1+offset,j1,2);
                   
                   if(i2 > 0 && i2 <= size(imgB,1)) 
                       patch_imgB = pad_imgB(i2:i2+patch_size-1, j2:j2+patch_size-1,:);
@@ -81,8 +81,8 @@ function [ imgC ] = patchMatching( nb_iter, patch_hs, filenameA, filenameB, file
               end
               
               if (j1+offset >= 1 && j1+offset <= size(imgC,2))
-                  i2 = coor(i1,j1+offset,1);
-                  j2 = coor(i1,j1+offset,2)-offset;
+                  i2 = NNF(i1,j1+offset,1);
+                  j2 = NNF(i1,j1+offset,2)-offset;
                   
                   if(j2 > 0 && j2 <= size(imgB,2))
                       patch_imgB = pad_imgB(i2:i2+patch_size-1, j2:j2+patch_size-1,:);
@@ -96,7 +96,7 @@ function [ imgC ] = patchMatching( nb_iter, patch_hs, filenameA, filenameB, file
               end
               
               imgC(i1,j1,:) = imgB(best_i, best_j,:);
-              coor(i1,j1,:) = [best_i,best_j];
+              NNF(i1,j1,:) = [best_i,best_j];
           end
           
           imagesc(imgC);

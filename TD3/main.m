@@ -1,11 +1,11 @@
 
 % Test Simple
-% filenameA = 'frodonA.png';
-% filenameB = 'frodonB.png';
-% filenameC = 'frodonC.png';
-% patch_hs = 1;
-% nb_iter = 4;
-% patchMatching(nb_iter, patch_hs, filenameA, filenameB, filenameC);
+filenameA = 'frodonA.png';
+filenameB = 'frodonB.png';
+filenameC = 'frodonC.png';
+patch_hs = 1;
+nb_iter = 4;
+patchMatching(nb_iter, patch_hs, filenameA, filenameB, filenameC);
 
 % Test Complet
 filename = {'frodonA.png', 'frodonB.png', 'frodonC.png';
