@@ -16,7 +16,12 @@ function [ imd ] = imageQuilting(filename, patch_size, size_imd);
   offset = patch_size - ov_size;
   for i=1:offset:size_imd(1)
     for j=1:offset:size_imd(2)
-    
+      
+      % don't compute the first case
+      if (i == 1 && j == 1)
+          continue;
+      end
+        
       % borders management
       if (i > size_imd(1) - patch_size) 
         i = size_imd(1) - patch_size + 1;
@@ -29,7 +34,9 @@ function [ imd ] = imageQuilting(filename, patch_size, size_imd);
       
       patchA = imd(i:i+patch_size-1, j:j+patch_size-1, :);
       mask = ones(patch_size, patch_size);
-      mask(find(rgb2gray(patchA) == -1)) = 0;
+      
+      
+      mask(find(patchA(:,:,1) == -1)) = 0;
 
       % Find best patch
       best_ssd = inf;
@@ -55,6 +62,11 @@ function [ imd ] = imageQuilting(filename, patch_size, size_imd);
           end
         end
       end
+      %figure;imshow(patchA);
+      %figure;imshow(patchB);
+      %figure;imshow(cut);
+      %figure;imshow(imd);
+      %pause(50);
     end
   end
 end
