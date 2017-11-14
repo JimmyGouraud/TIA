@@ -9,7 +9,7 @@ size_imd = [300, 300];
 
 % Test Graph Cut
 
-pkg load image
+% pkg load image
 tex = im2double(imread(filename));
 ov_size = floor(patch_size / 5);
 
@@ -25,9 +25,8 @@ patchB(1:patch_size, 1:patch_size, :) = tex(rand_i:rand_i+patch_size-1, rand_j:r
 
 
 
-
 width = ov_size;
-height = size(tex, 1);
+height = patch_size;
 class = zeros(width * height, 1) - 1;
 class(1:width:height*width) = 0;
 class(width:width:height*width) = 1;
@@ -40,60 +39,31 @@ labelcost = [0,1;1,0];
 
 pairwise = sparse(width*height,width*height);
 pairwise(:,:) = 0; % useful?
-%     c
-% e - a - b
-%     d
 
+cpt = 0;
 for i=1:height
   for j=1:width
-    [i,j]
-    if (i == 1 && j == 1)
-    
-    elseif (i == width && j == height)
-    
-    else
-      offset = i * width + j + (i-1 + j-1) * width*height
-      pairwise(offset) = inf;
-      pairwise(offset+1) = sum(abs(patchA(i,j,:) - patchB(i,j,:)) + abs(patchA(i,j+1,:) + patchB(i,j+1,:)));
-      pairwise(offset-1) = sum(abs(patchA(i,j,:) - patchB(i,j,:)) + abs(patchA(i,j-1,:) + patchB(i,j-1,:)));
-      pairwise(offset+width*height) = sum(abs(patchA(i,j,:) - patchB(i,j,:)) + abs(patchA(i,j+width,:) + patchB(i,j+width,:)));
-      pairwise(offset-width*height) = sum(abs(patchA(i,j,:) - patchB(i,j,:)) + abs(patchA(i,j-width,:) + patchB(i,j-width,:)));
-    end  
+    offset = cpt * width * height + (i - 1) * width + j;
+    % TODO: precompute abs(patchA(i,j,:));
+    if (j ~= 1)
+      pairwise(offset-1) = sum(abs(patchA(i,j,:) - patchB(i,j,:)) + abs(patchA(i,j-1,:) - patchB(i,j-1,:)));
+      pairwise(offset) = pairwise(offset) + pairwise(offset-1);
+    end
+    if (j ~= width)
+      pairwise(offset+1) = sum(abs(patchA(i,j,:) - patchB(i,j,:)) + abs(patchA(i,j+1,:) - patchB(i,j+1,:)));
+      pairwise(offset) = pairwise(offset) + pairwise(offset+1);
+    end
+
+    if (i ~= 1)
+      pairwise(offset-width) = sum(abs(patchA(i,j,:) - patchB(i,j,:)) + abs(patchA(i-1,j,:) - patchB(i-1,j,:)));
+      pairwise(offset) = pairwise(offset) + pairwise(offset-width);
+    end
+    if (i ~= height)  
+      pairwise(offset+width) = sum(abs(patchA(i,j,:) - patchB(i,j,:)) + abs(patchA(i+1,j,:) - patchB(i+1,j,:)));
+      pairwise(offset) = pairwise(offset) + pairwise(offset+width);
+    end
+    cpt = cpt + 1;
   end
 end
 
-
-
-%
-%W = 10;
-%H = 5;
-%segclass = zeros(50,1);
-%pairwise = sparse(50,50);
-%unary = zeros(7,25);
-%
-%% pairwise = cout des arretes => équation 1 paper
-%% [X, Y] = overlap A, overlap B
-%% labelcost = ?
-%% unary = ? ("potentiel initiaux des noeuds") => [inf 0] pour les premiers pixel, [0 inf] pour les autres pixels
-%% segclass = ? ("classes initiales du label")
-%
-%[X Y] = meshgrid(1:7, 1:7);
-%labelcost = min(4, (X - Y).*(X - Y));
-%
-%for row = 0:H-1
-%  for col = 0:W-1
-%    pixel = 1+ row*W + col;
-%    if row+1 < H,  pairwise(pixel, 1+col+(row+1)*W) = 1; end
-%    if row-1 >= 0, pairwise(pixel, 1+col+(row-1)*W) = 1; end 
-%    if col+1 < W,  pairwise(pixel, 1+(col+1)+row*W) = 1; end
-%    if col-1 >= 0, pairwise(pixel, 1+(col-1)+row*W) = 1; end 
-%    if pixel < 25
-%      unary(:,pixel) = [0 10 10 10 10 10 10]'; 
-%    else
-%      unary(:,pixel) = [10 10 10 10 0 10 10]'; 
-%    end
-%  end
-%end
-%
-%[labels E Eafter] = GCMex(segclass, single(unary), pairwise, single(labelcost),0);
-
+[labels E Eafter] = GCMex(class, single(unary), pairwise, single(labelcost), 0);
