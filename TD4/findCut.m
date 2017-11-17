@@ -11,7 +11,7 @@ function [ cut ] = findCut(patchA, patchB, mask, patch_size, ov_size)
     patch = rot90(patch,3);
     cut = rot90(cut,3);
   end 
-  
+   
   if (mask(patch_size, 1) == 1) % vertical overlap
     cut = computeCut(cut, patch, patch_size, ov_size);
   end

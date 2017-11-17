@@ -62,11 +62,13 @@ function [ imd ] = imageQuilting(filename, patch_size, size_imd);
           end
         end
       end
-      %figure;imshow(patchA);
-      %figure;imshow(patchB);
-      %figure;imshow(cut);
-      %figure;imshow(imd);
-      %pause(50);
+      
+      % Display
+%      figure;imshow(patchA);
+%      figure;imshow(patchB);
+%      figure;imshow(cut);
+%      figure;imshow(imd);
+%      pause(5);
     end
   end
 end
