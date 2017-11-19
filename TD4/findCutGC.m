@@ -1,4 +1,4 @@
-function [ cut ] = findCutGC(patchA, patchB,  patch_size, ov_size)
+function [ cut ] = findCutGC(patchA, patchB, patch_size, ov_size)
 
   class = zeros(ov_size * patch_size, 1);
   class(1:ov_size:patch_size*ov_size) = 0;
@@ -23,7 +23,7 @@ function [ cut ] = findCutGC(patchA, patchB,  patch_size, ov_size)
       if (j ~= ov_size)
         pairwise(offset+1) = pixel + sum(abs(patchA(i,j+1,:) - patchB(i,j+1,:)));
       end
-        if (i ~= 1)
+      if (i ~= 1)
         pairwise(offset-ov_size) = pixel + sum(abs(patchA(i-1,j,:) - patchB(i-1,j,:)));
       end
       if (i ~= patch_size)  
@@ -33,11 +33,12 @@ function [ cut ] = findCutGC(patchA, patchB,  patch_size, ov_size)
     end
   end
    
+  figure; imagesc(patchA);
+  figure; imagesc(patchB);
+  
   [labels E Eafter] = GCMex(class, single(unary), pairwise, single(labelcost), 0);
    
   labels = reshape(labels, ov_size, patch_size)';
-
-  imshow(labels);
   
   cut = zeros(patch_size, patch_size);
   offset = patch_size - ov_size;
@@ -48,5 +49,4 @@ function [ cut ] = findCutGC(patchA, patchB,  patch_size, ov_size)
       end
     end
   end
-
 end

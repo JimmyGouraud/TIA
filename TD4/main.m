@@ -6,10 +6,11 @@ size_imd = [300, 300];
 
 
 % Dynamic Programming
-%imd = imageQuilting(filename, patch_size, size_imd);
+imd = imageQuilting(filename, patch_size, size_imd);
+figure;imshow(imd);
 
 % Graph Cut
-imd = imageQuiltingGC(filename, patch_size);
+%imd = imageQuiltingGC(filename, patch_size);
+%figure;imshow(imd);
 
 
-figure;imshow(imd);

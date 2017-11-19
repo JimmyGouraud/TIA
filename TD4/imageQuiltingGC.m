@@ -17,7 +17,7 @@ function [ imd ] = imageQuiltingGC(filename, patch_size);
   rand_i = randi(size(tex,1)-patch_size);
   rand_j = randi(size(tex,2)-patch_size);
   patchB(1:patch_size, 1:patch_size, :) = tex(rand_i:rand_i+patch_size-1, rand_j:rand_j+patch_size-1, :);
-
+  
   cut = findCutGC(patchA, patchB, patch_size, ov_size);
     
   imd = zeros(patch_size, patch_size * 2 - ov_size, 3);

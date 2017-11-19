@@ -34,8 +34,6 @@ function [ imd ] = imageQuilting(filename, patch_size, size_imd);
       
       patchA = imd(i:i+patch_size-1, j:j+patch_size-1, :);
       mask = ones(patch_size, patch_size);
-      
-      
       mask(find(patchA(:,:,1) == -1)) = 0;
 
       % Find best patch
@@ -55,6 +53,7 @@ function [ imd ] = imageQuilting(filename, patch_size, size_imd);
       
       % Find cut
       cut = findCut(patchA, patchB, mask, patch_size, ov_size);
+%      cut = findCutGC(patchA, patchB, patch_size, ov_size);      
       for i2=1:patch_size
         for j2=1:patch_size
           if (cut(i2,j2) == 0) 
@@ -68,7 +67,7 @@ function [ imd ] = imageQuilting(filename, patch_size, size_imd);
 %      figure;imshow(patchB);
 %      figure;imshow(cut);
 %      figure;imshow(imd);
-%      pause(5);
+%      pause(10);
     end
   end
 end
