@@ -52,8 +52,8 @@ function [ imd ] = imageQuilting(filename, patch_size, size_imd);
       patchB = tex(best_coord(1):best_coord(1)+patch_size-1, best_coord(2):best_coord(2)+patch_size-1, :);
       
       % Find cut
-      cut = findCut(patchA, patchB, mask, patch_size, ov_size);
-%      cut = findCutGC(patchA, patchB, patch_size, ov_size);      
+%      cut = findCut(patchA, patchB, mask, patch_size, ov_size);
+      cut = findCutGC(patchA, patchB, patch_size, ov_size); 
       for i2=1:patch_size
         for j2=1:patch_size
           if (cut(i2,j2) == 0) 
@@ -67,7 +67,7 @@ function [ imd ] = imageQuilting(filename, patch_size, size_imd);
 %      figure;imshow(patchB);
 %      figure;imshow(cut);
 %      figure;imshow(imd);
-%      pause(10);
+%      pause(2);
     end
   end
 end
