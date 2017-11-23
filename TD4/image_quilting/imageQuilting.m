@@ -62,16 +62,11 @@ function [ imd ] = imageQuilting(filename, patch_size, size_imd);
       end
       
       % Display
-%      if (j ~= 1)
-%        figure;imshow(imd(i:i+patch_size-1, j-offset:j-offset+patch_size-1, :));
-%      end
-%      figure;imshow(patchB);
-%      figure;imshow(cut(1:patch_size, 1:ov_size));
-%      if (j ~= 1)
-%        figure;imshow(imd(i:i+patch_size-1, j-offset:j+patch_size-1, :));
-%      end
-%      imshow(imd);
-%      pause(5);
+      figure;imshow(imd(1:patch_size, 1:patch_size, :));
+      figure;imshow(patchB);
+      figure;imshow(cut(1:patch_size, 1:ov_size));
+      figure;imshow(imd);
+      pause(500);
     end
   end
 end
