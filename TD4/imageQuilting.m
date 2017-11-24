@@ -71,7 +71,7 @@ function [ imd ] = imageQuilting(filename, patch_size, size_imd);
 %        figure;imshow(imd(i:i+patch_size-1, j-offset:j+patch_size-1, :));
 %      end
 %      imshow(imd);
-%      pause(5);
+%      pause(50);
     end
   end
 end

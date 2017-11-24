@@ -33,10 +33,10 @@ function [ imd ] = imageQuiltingGC(filename, patch_size);
   end
   
   % Display
-  figure;imshow(patchA);
-  figure;imshow(patchB);
-  figure;imshow(cut(1:patch_size, 1:ov_size));
-  figure;imshow(imd);
-  pause(500);
+%   figure;imshow(patchA);
+%   figure;imshow(patchB);
+%   figure;imshow(cut(1:patch_size, 1:ov_size));
+%   figure;imshow(imd);
+%   pause(5);
 end
 

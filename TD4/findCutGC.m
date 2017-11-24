@@ -35,10 +35,6 @@ function [ cut ] = findCutGC(patchA, patchB, patch_size, ov_size)
     end
   end
   
-%  figure; imagesc(patchA);
-%  figure; imagesc(patchB);
-  
-  
   [labels E Eafter] = GCMex(class, single(unary), pairwise, single(labelcost), 0);   
   labels = reshape(labels, ov_size, patch_size)';
 
